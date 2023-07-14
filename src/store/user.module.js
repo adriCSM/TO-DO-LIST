@@ -9,8 +9,7 @@ export const user = {
     async addUser({ commit }, user) {
       try {
         await userService.addUser(user);
-        const response = await userService.getUsers();
-        commit('users', response);
+        commit;
       } catch (error) {
         console.log(error.message);
       }
@@ -27,8 +26,7 @@ export const user = {
     async updateUser({ commit }, { id, payload }) {
       try {
         await userService.updateUser(id, payload);
-        const response = await userService.getUsers();
-        commit('user', response);
+        commit;
       } catch (error) {
         console.log(error.message);
       }
