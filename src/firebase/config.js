@@ -3,14 +3,14 @@ import { getDatabase } from 'firebase/database';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 const firebaseConfig = {
-  apiKey: 'AIzaSyA8_-1q9GBGXWY05qk6hO4001Riu0edym8',
-  authDomain: 'belajar-api-343903.firebaseapp.com',
-  databaseURL: 'https://belajar-api-343903-default-rtdb.asia-southeast1.firebasedatabase.app',
-  projectId: 'belajar-api-343903',
-  storageBucket: 'belajar-api-343903.appspot.com',
-  messagingSenderId: '1083919434495',
-  appId: '1:1083919434495:web:b20baca0cf4e99ead202ca',
-  measurementId: 'G-X1HPJMDLQK',
+  apiKey: process.env.VUE_APP_API_KEY,
+  authDomain: process.env.VUE_APP_AUTH_DOMAIN,
+  databaseURL: process.env.VUE_APP_DATABASE_URL,
+  projectId: process.env.VUE_APP_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_ID,
+  measurementId: process.env.VUE_APP_MEASUREMENT_ID,
 };
 
 const app = firebase.initializeApp(firebaseConfig);
