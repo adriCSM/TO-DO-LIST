@@ -1,5 +1,5 @@
 <script setup>
-import chat from '../components/HomeTodo.vue';
+import chat from '../components/lists/HomeTodo.vue';
 </script>
 <template>
   <chat />

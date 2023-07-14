@@ -1,36 +1,53 @@
-import app from '../firebase/config';
-import { getDatabase, ref, set, onValue, remove } from 'firebase/database';
-const database = getDatabase(app);
+import db from '../firebase/config';
+import { ref, set, get, remove, update } from 'firebase/database';
+import jwtDecode from 'jwt-decode';
 
 export default {
   async addList(data) {
-    try {
-      const id = new Date().getTime();
-      await set(ref(database, 'lists/' + id), {
-        id,
-        text: data.text,
-        textDecoration: data.textDecoration,
-        textShadow: data.textShadow,
-        selesai: data.selesai,
-      });
-    } catch (err) {
-      console.log(err.message);
-    }
+    const { user_id } = jwtDecode(JSON.parse(localStorage.getItem('accessToken')));
+    const id = new Date().getTime();
+    await set(ref(db, 'lists/' + id), {
+      id,
+      user_id,
+      text: data.text,
+      textDecoration: data.textDecoration,
+      textShadow: data.textShadow,
+      selesai: data.selesai,
+    });
   },
   async getLists() {
-    const lists = [];
-    onValue(ref(database, 'lists'), (snappshot) => {
-      snappshot.forEach((element) => {
-        lists.push(element.val());
-      });
+    const { user_id } = jwtDecode(JSON.parse(localStorage.getItem('accessToken')));
+    const snappshot = await get(ref(db, 'lists'));
+    let data = [];
+    snappshot.forEach((child) => {
+      if (child.val().user_id == user_id) {
+        data.push(child.val());
+      }
     });
-    return lists;
+    return data;
+  },
+  async getList(id) {
+    const snappshot = await get(ref(db, 'lists/' + id));
+    return snappshot.val();
+  },
+  async updateList(id) {
+    const response = await this.getList(id);
+    const selesai = response.selesai;
+    if (selesai) {
+      await update(ref(db, 'lists/' + id), {
+        selesai: false,
+        textDecoration: '',
+        textShadow: '0 0 1rem #0fe',
+      });
+    } else {
+      await update(ref(db, 'lists/' + id), {
+        selesai: true,
+        textDecoration: 'text-decoration-line-through',
+        textShadow: '0 0 1rem red',
+      });
+    }
   },
   async removeList(id) {
-    try {
-      remove(ref(database, 'lists/' + id));
-    } catch (err) {
-      console.error(err);
-    }
+    await remove(ref(db, 'lists/' + id));
   },
 };

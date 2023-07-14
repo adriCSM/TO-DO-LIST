@@ -1,4 +1,5 @@
 import handler from '../service/service';
+import { hadlerError } from '@/service/errorHandler.service';
 
 const initializeState = { lists: null };
 
@@ -11,7 +12,7 @@ export const service = {
         const response = await handler.getLists();
         commit('lists', response);
       } catch (err) {
-        console.error(err);
+        await hadlerError.errorHandler(err);
       }
     },
     async addList({ commit }, data) {
@@ -20,7 +21,16 @@ export const service = {
         const response = await handler.getLists();
         commit('lists', response);
       } catch (err) {
-        console.error(err);
+        await hadlerError.errorHandler(err);
+      }
+    },
+    async updateList({ commit }, id) {
+      try {
+        await handler.updateList(id);
+        const response = await handler.getLists();
+        commit('lists', response);
+      } catch (err) {
+        await hadlerError.errorHandler(err);
       }
     },
     async removeList({ commit }, id) {
@@ -29,7 +39,7 @@ export const service = {
         const response = await handler.getLists();
         commit('lists', response);
       } catch (err) {
-        console.error(err);
+        await hadlerError.errorHandler(err);
       }
     },
   },
