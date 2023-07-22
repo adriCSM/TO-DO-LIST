@@ -23,6 +23,14 @@ export const user = {
         console.log(error.message);
       }
     },
+    async getUsers({ commit }) {
+      try {
+        const response = await userService.getUsers();
+        commit('users', response);
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
     async updateUser({ commit }, { id, payload }) {
       try {
         await userService.updateUser(id, payload);

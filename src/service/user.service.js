@@ -3,16 +3,17 @@ import { ref, set, remove, get, update } from 'firebase/database';
 
 export default {
   async addUser(user) {
-    set(ref(db, 'users/' + user.id), {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      image: user.image,
-      token: user.token,
-      isLogin: true,
-    });
+    set(ref(db, 'users/' + user.id), { ...user });
   },
 
+  async getUsers() {
+    let users = [];
+    const response = await get(ref(db, 'users'));
+    response.forEach((child) => {
+      users.push(child.val());
+    });
+    return users;
+  },
   async getUser(id) {
     const response = await get(ref(db, 'users/' + id));
     return response.val();

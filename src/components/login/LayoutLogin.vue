@@ -1,55 +1,23 @@
 <script setup>
-import router from '@/router';
 import { useStore } from 'vuex';
 
 const store = useStore();
 const login = async () => {
   await store.dispatch('auth/login');
-  if (store.state.auth.user) {
-    await store.dispatch('user/getUser', store.state.auth.user.uid);
-    const user = store.state.user.user;
-    if (!user) {
-      const {
-        uid: id,
-        stsTokenManager: token,
-        displayName: name,
-        email: email,
-        photoURL: image,
-      } = store.state.auth.user;
-      await store.dispatch('user/addUser', { id, name, email, image, token });
-      router.push({ name: 'Home' });
-    } else {
-      await store.dispatch('user/updateUser', { id: user.id, payload: { isLogin: true } });
-      router.push({ name: 'Home' });
-    }
-  }
-};
-
-const loginGit = async () => {
-  await store.dispatch('auth/loginGithub');
-  if (store.state.auth.user) {
-    await store.dispatch('user/getUser', store.state.auth.user.uid);
-    const user = store.state.user.user;
-    if (!user) {
-      const {
-        uid: id,
-        stsTokenManager: token,
-        reloadUserInfo,
-        email: email,
-        photoURL: image,
-      } = store.state.auth.user;
-      await store.dispatch('user/addUser', {
-        id,
-        name: reloadUserInfo.screenName,
-        email,
-        image,
-        token,
-      });
-      router.push({ name: 'Home' });
-    } else {
-      await store.dispatch('user/updateUser', { id: user.id, payload: { isLogin: true } });
-      router.push({ name: 'Home' });
-    }
+  await store.dispatch('user/getUsers');
+  const users = store.state.user.users;
+  const userExsist = users.find((user) => user.email == store.state.auth.user.email);
+  if (!userExsist) {
+    const {
+      uid: id,
+      stsTokenManager: token,
+      displayName: name,
+      email: email,
+      photoURL: image,
+    } = store.state.auth.user;
+    await store.dispatch('user/addUser', { id, name, email, image, token, isLogin: true });
+  } else {
+    await store.dispatch('user/updateUser', { id: userExsist.id, payload: { isLogin: true } });
   }
 };
 </script>
@@ -81,18 +49,6 @@ const loginGit = async () => {
           </template>
         </v-tooltip>
       </v-hover>
-      <v-tooltip text="Github" location="end">
-        <template v-slot:activator="{ props, isActive }">
-          <v-btn
-            v-bind="props"
-            class="text-capitalize mx-2"
-            @click.prevent="loginGit"
-            color="white"
-            icon="mdi-github"
-            :style="isActive ? { boxShadow: ' 0 0 1rem white' } : 'none'"
-          ></v-btn>
-        </template>
-      </v-tooltip>
     </v-card>
   </div>
 </template>

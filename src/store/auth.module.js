@@ -1,3 +1,4 @@
+import router from '@/router';
 import authService from '@/service/auth.service';
 import { hadlerError } from '@/service/errorHandler.service';
 
@@ -9,19 +10,13 @@ export const auth = {
     async login({ commit }) {
       try {
         const response = await authService.login();
+        router.push({ name: 'Home' });
         commit('user', response);
       } catch (error) {
         await hadlerError.errorHandler(error);
       }
     },
-    async loginGithub({ commit }) {
-      try {
-        const response = await authService.loginGithub();
-        commit('user', response);
-      } catch (error) {
-        await hadlerError.errorHandler(error);
-      }
-    },
+
     async logout({ commit }, id) {
       try {
         await authService.logout(id);

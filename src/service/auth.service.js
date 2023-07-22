@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, getAuth, signInWithPopup, GithubAuthProvider } from 'firebase/auth';
+import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import db from '../firebase/config';
 import { ref, update } from 'firebase/database';
 
@@ -13,13 +13,7 @@ export default {
 
     return user;
   },
-  async loginGithub() {
-    const provider = new GithubAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    localStorage.setItem('accessToken', JSON.stringify(user.stsTokenManager.accessToken));
-    return user;
-  },
+
   async logout(id) {
     localStorage.removeItem('accessToken');
     await update(ref(db, 'users/' + id), {
